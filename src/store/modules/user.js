@@ -23,10 +23,8 @@ const actions = {
   async loginAsync(context, data) {
     // 调用登录接口
     const result = await login(data)
-    if (result.data.success) {
-      console.log('登录接口请求成功', result)
-      context.commit('SetToken', result.data.data) // 调用同步更改token方法
-    }
+    console.log('登录接口请求成功', result)
+    context.commit('SetToken', result) // 调用同步更改token方法
   }
 }
 export default {
