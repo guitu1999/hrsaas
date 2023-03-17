@@ -58,7 +58,8 @@
 <script>
 // 校验手机格式
 import { validMobile } from '@/utils/validate'
-
+// 引入登录接口
+import { mapActions } from 'vuex'
 export default {
   name: 'Login',
   data() {
@@ -74,7 +75,7 @@ export default {
     return {
       loginForm: {
         mobile: '13800000002',
-        password: '123456'
+        password: 123456
       },
       // 登录校验规则 trigger校验的方式  blur失去焦点  validator自定义校验函数
       loginRules: {
@@ -117,6 +118,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['user/loginAsync']),
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -128,20 +130,24 @@ export default {
       })
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
+      this.$refs.loginForm.validate(async isOk => {
+        if (isOk) {
+          try {
+            this.loading = true
+            // async标记的函数时一个promise对象
+            await this['user/loginAsync'](this.loginForm)
+            // await下边的代码都是成功的代码
+            this.$router.push('/')
+          } catch (err) {
+            console.log('登录接口错误')
+          } finally {
+            // 无论try 还时 catch  都会走finally
             this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else {
-          console.log('error submit!!')
-          return false
+          }
         }
-      })
+      }
+
+      )
     }
   }
 }
