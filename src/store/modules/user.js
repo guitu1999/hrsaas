@@ -1,4 +1,4 @@
-import { getToken, setToken, removeToken } from '@/utils/auth.js'
+import { getToken, setToken, removeToken, setTimeStamp } from '@/utils/auth.js'
 import { login, getUserInfo, getUserDetail } from '@/api/user'
 const state = {
   // 每次登录先从缓存中读取token
@@ -34,6 +34,7 @@ const actions = {
     const result = await login(data)
     console.log('登录接口请求成功', result)
     context.commit('SetToken', result) // 调用同步更改token方法
+    setTimeStamp()// 设置当前时间戳
   },
   // 获取用户信息方法
   async getUserInfoAsync(context) {
