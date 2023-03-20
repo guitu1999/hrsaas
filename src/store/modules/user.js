@@ -43,6 +43,11 @@ const actions = {
     const baseinfo = await getUserDetail(result.userId)
     context.commit('getInfo', { ...result, ...baseinfo }) // 调用同步方法
     return result // 返回   给我们后期做权限的伏笔
+  },
+  // 退出登录
+  async lgout(context) {
+    context.commit('removeToken')
+    context.commit('removeInfo')
   }
 }
 export default {
