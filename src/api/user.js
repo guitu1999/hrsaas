@@ -16,6 +16,13 @@ export function getUserInfo(data) {
     method: 'POST'
   })
 }
+// 获取用户详情  现在是显示头像 (用户id)
+export function getUserDetail(id) {
+  return request({
+    url: `/sys/user/${id}`,
+    method: 'GET'// axios默认是get请求
+  })
+}
 
 export function logout() {
 

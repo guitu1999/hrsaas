@@ -9,7 +9,7 @@ const whiteList = ['/login', '/404'] // 定义白名单
 
 // 前置守卫   next必须执行
 // next(false) 跳转终止
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   NProgress.start() // 开启进度条
   // 有token
   if (store.getters.token) {
@@ -19,6 +19,13 @@ router.beforeEach((to, from, next) => {
       next('/')
     } else {
       // 没有放行
+      // 判断是否有用户id
+      if (!store.getters.userId) {
+        // 没有 ==> 请求获取用户信息异步方法
+        await store.dispatch('user/getUserInfoAsync')
+        // 需要改成同步方法 加await async
+        // 获取资料完毕后  再去放行
+      }
       next()
     }
   } else {

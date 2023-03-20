@@ -1,5 +1,5 @@
 import { getToken, setToken, removeToken } from '@/utils/auth.js'
-import { login, getUserInfo } from '@/api/user'
+import { login, getUserInfo, getUserDetail } from '@/api/user'
 const state = {
   // 每次登录先从缓存中读取token
   token: getToken() || null, // 登录的etoken
@@ -39,7 +39,9 @@ const actions = {
   async getUserInfoAsync(context) {
     const result = await getUserInfo()
     console.log('用户信息接口请求成功', result)
-    context.commit('getInfo', result) // 调用同步方法
+    // 获取用户详情信息
+    const baseinfo = await getUserDetail(result.userId)
+    context.commit('getInfo', { ...result, ...baseinfo }) // 调用同步方法
     return result // 返回   给我们后期做权限的伏笔
   }
 }
