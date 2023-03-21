@@ -16,6 +16,7 @@
 
 <script>
 import TreeTool from './components/tree-tool.vue'
+import { tranListToTreeData } from '@/utils'
 import { getDepartments } from '@/api/departments'
 export default {
   components: {
@@ -41,7 +42,7 @@ export default {
       try {
         const result = await getDepartments()
         this.company = { name: result.companyName, manager: '负责人' }
-        console.log('结果', result)
+        this.departs = tranListToTreeData(result.depts, '')
       } catch (err) {
         console.log('部门列表接口请求失败', err)
       }
