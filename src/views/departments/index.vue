@@ -3,53 +3,11 @@
     <div class="app-container">
       <!--组织架构  -->
       <el-card class="tree-card">
-        <el-row type="flex" justify="space-between" align="middle" style="height:40px">
-          <!-- 左侧内容 -->
-          <el-col>江苏传智播客教育科技股份有限公司</el-col>
-          <!-- 右侧内容 -->
-          <el-col :span="4">
-            <el-row type="flex" justify="end">
-              <el-col>负责人</el-col>
-              <el-col>
-                <!-- 下拉菜单 -->
-                <el-dropdown>
-                  <span class="el-dropdown-link">
-                    操作<i class="el-icon-arrow-down" />
-                  </span>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>添加子部门</el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </el-col>
-            </el-row>
-          </el-col>
-        </el-row>
+        <TreeTool :tree-node="company" :is-rooter="true" />
+
         <!--放置一个属性   这里的props和我们之前学习的父传子 的props没关系-->
         <el-tree :data="departs" :props="defaultProps">
-          <!-- 插槽内容会循环多次 data是每个节点的数据对象 -->
-          <el-row slot-scope="{data}" type="flex" justify="space-between" align="middle" style="height:40px;width: 100%;">
-            <!-- 左侧内容 -->
-            <el-col>{{ data.name }}</el-col>
-            <!-- 右侧内容 -->
-            <el-col :span="4">
-              <el-row type="flex" justify="end">
-                <el-col>{{ data.manager }}</el-col>
-                <el-col>
-                  <!-- 下拉菜单 -->
-                  <el-dropdown>
-                    <span class="el-dropdown-link">
-                      操作<i class="el-icon-arrow-down" />
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item>添加子部门</el-dropdown-item>
-                      <el-dropdown-item>编辑子部门</el-dropdown-item>
-                      <el-dropdown-item>删除子部门</el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown>
-                </el-col>
-              </el-row>
-            </el-col>
-          </el-row>
+          <TreeTool slot-scope="{data}" :tree-node="data" />
         </el-tree>
       </el-card>
     </div>
@@ -57,17 +15,30 @@
 </template>
 
 <script>
+import TreeTool from './components/tree-tool.vue'
 export default {
+  components: {
+    TreeTool
+  },
   data() {
     return {
-      defaultProps: {
-        label: 'name'
-      },
+      // 新增company属性
+      company: { name: '江苏传智播客教育科技股份有限公司', manager: '负责人' },
       departs: [
-        { name: '总裁办', manager: '曹操', children: [{ name: '董事会' }] },
-        { name: '行政部', manager: '曹操' },
-        { name: '人事部', manager: '曹操' }
-      ]
+        {
+          name: '总裁办',
+          manager: '曹操',
+          children: [
+            {
+              name: '董事会', manager: '曹丕'
+            }
+          ]
+        },
+        { name: '行政部', manager: '刘备' },
+        { name: '人事部', manager: '孙权' }],
+      defaultProps: {
+        label: 'name' // 表示 从这个属性显示内容
+      }
 
     }
   }
