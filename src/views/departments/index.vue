@@ -16,6 +16,7 @@
 
 <script>
 import TreeTool from './components/tree-tool.vue'
+import { getDepartments } from '@/api/departments'
 export default {
   components: {
     TreeTool
@@ -23,23 +24,27 @@ export default {
   data() {
     return {
       // 新增company属性
-      company: { name: '江苏传智播客教育科技股份有限公司', manager: '负责人' },
-      departs: [
-        {
-          name: '总裁办',
-          manager: '曹操',
-          children: [
-            {
-              name: '董事会', manager: '曹丕'
-            }
-          ]
-        },
-        { name: '行政部', manager: '刘备' },
-        { name: '人事部', manager: '孙权' }],
+      company: { name: '', manager: '' },
+      departs: [],
       defaultProps: {
         label: 'name' // 表示 从这个属性显示内容
       }
 
+    }
+  },
+  created() {
+    this.getDepartments()
+  },
+  methods: {
+    // 获取部门列表
+    async getDepartments() {
+      try {
+        const result = await getDepartments()
+        this.company = { name: result.companyName, manager: '负责人' }
+        console.log('结果', result)
+      } catch (err) {
+        console.log('部门列表接口请求失败', err)
+      }
     }
   }
 }
