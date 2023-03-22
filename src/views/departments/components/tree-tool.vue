@@ -48,7 +48,8 @@ export default {
     handleCommand(type) {
       console.log('点击了', type)
       if (type === 'add') {
-        // 添加
+        // 添加部门  把当前的节点信息传递过去
+        this.$emit('addDepts', this.treeNode)
       } else if (type === 'edit') {
         // 编辑
       } else if (type === 'del') {

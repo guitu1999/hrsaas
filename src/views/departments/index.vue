@@ -7,20 +7,23 @@
 
         <!--放置一个属性   这里的props和我们之前学习的父传子 的props没关系-->
         <el-tree :data="departs" :props="defaultProps">
-          <TreeTool slot-scope="{data}" :tree-node="data" @delDepts="getDepartments" />
+          <TreeTool slot-scope="{data}" :tree-node="data" @addDepts="addDepts" @delDepts="getDepartments" />
         </el-tree>
       </el-card>
     </div>
+    <addDept :show-dialog="showDialog" />
   </div>
 </template>
 
 <script>
 import TreeTool from './components/tree-tool.vue'
+import addDept from './components/add-dept.vue'
 import { tranListToTreeData } from '@/utils'
 import { getDepartments } from '@/api/departments'
 export default {
   components: {
-    TreeTool
+    TreeTool,
+    addDept
   },
   data() {
     return {
@@ -29,8 +32,9 @@ export default {
       departs: [],
       defaultProps: {
         label: 'name' // 表示 从这个属性显示内容
-      }
-
+      },
+      showDialog: false, // 是否显示添加弹窗
+      node: null // 当前点击的节点部门信息
     }
   },
   created() {
@@ -46,6 +50,11 @@ export default {
       } catch (err) {
         console.log('部门列表接口请求失败', err)
       }
+    },
+    // 添加部门
+    addDepts(node) {
+      this.showDialog = true // 显示弹窗
+      this.node = node
     }
   }
 }
