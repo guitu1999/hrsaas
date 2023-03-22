@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { getDepartments, addDepartments, getDepartDetail } from '@/api/departments'
+import { getDepartments, addDepartments, getDepartDetail, updateDepartments } from '@/api/departments'
 import { getEmployeeSimple } from '@/api/employees'
 export default {
   // props 是一个异步方法
@@ -47,13 +47,27 @@ export default {
     // 校验方法
     const checkNameRepeat = async (rule, value, callback) => {
       const { depts } = await getDepartments()
-      const result = depts.filter((item) => item.pid === this.treeNode.id).some(obj => obj.name === value)
+      let result = false
+      if (this.formData.id) {
+        // 编辑校验  排除自身  判断同级
+        result = depts.filter(item => item.pid === this.formData.pid && item.id !== this.formData.id).some(obj => obj.name === value)
+      } else {
+        // 添加校验
+        result = depts.filter((item) => item.pid === this.treeNode.id).some(obj => obj.name === value)
+      }
       result ? callback(new Error(`同级部门下已经有${value}的部门了`)) : callback()
     }
     const checkCodeRepeat = async (rule, value, callback) => {
       const { depts } = await getDepartments()
+      let result = false
+      if (this.formData.id) {
+        // 编辑校验  先排除自身
+        result = depts.filter(item => item.id !== this.formData.id).some(obj => obj.code === value)
+      } else {
+        // 添加校验
+        result = depts.some(item => item.code === value && value)
+      }
       // alue不为空 因为我们的部门有可能没有code
-      const result = depts.some(item => item.code === value && value)
       result ? callback(new Error(`组织架构中已经有部门使用${value}编码`)) : callback()
     }
     return {
@@ -139,7 +153,14 @@ export default {
       this.$refs.formDept.validate(async isOk => {
         if (isOk) {
           console.log('校验成功')
-          await addDepartments({ ...this.formData, pid: this.treeNode.id })
+          if (this.formData.id) {
+            // 编辑
+            console.log('编辑')
+            await updateDepartments(this.formData)
+          } else {
+            // 添加
+            await addDepartments({ ...this.formData, pid: this.treeNode.id })
+          }
           // 更新父页面数据
           this.$emit('addDepts')
           // 关闭弹窗 sync修饰符关闭
