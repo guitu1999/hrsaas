@@ -7,7 +7,7 @@
 
         <!--放置一个属性   这里的props和我们之前学习的父传子 的props没关系-->
         <el-tree :data="departs" :props="defaultProps">
-          <TreeTool slot-scope="{data}" :tree-node="data" />
+          <TreeTool slot-scope="{data}" :tree-node="data" @delDepts="getDepartments" />
         </el-tree>
       </el-card>
     </div>

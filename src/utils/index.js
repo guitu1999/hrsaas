@@ -122,7 +122,7 @@ export function tranListToTreeData(list, rootValue) {
   list.forEach(item => {
     if (item.pid === rootValue) {
       const children = tranListToTreeData(list, item.id)
-      console.log('children', children)
+      // console.log('children', children)
       if (children.length > 0) {
         item.children = children
       }
