@@ -8,7 +8,9 @@
         <el-input v-model="formData.code" style="width: 80%;" placeholder="1-50个字符" />
       </el-form-item>
       <el-form-item prop="manager" label="部门负责人">
-        <el-select v-model="formData.manager" style="width: 80%;" placeholder="请选择" />
+        <el-select v-model="formData.manager" style="width: 80%;" placeholder="请选择" @focus="getEmployeeSimple">
+          <el-option v-for="obj in peoples" :key="obj.id" :value="obj.username" :label="obj.username" />
+        </el-select>
       </el-form-item>
       <el-form-item prop="introduce" label="部门介绍">
         <el-input v-model="formData.introduce" style="width: 80%;" placeholder="1-50个字符" type="textarea" :rows="3" />
@@ -26,7 +28,7 @@
 
 <script>
 import { getDepartments } from '@/api/departments'
-import { async, nearer } from 'q'
+import { getEmployeeSimple } from '@/api/employees'
 export default {
   props: {
     // 是否显示
@@ -60,6 +62,7 @@ export default {
         manager: '', // 部门管理者
         introduce: '' // 部门介绍
       },
+      peoples: [], // 员工简单信息
       // 校验规则
       rules: {
         name: [
@@ -117,6 +120,12 @@ export default {
           }
         ]
       }
+    }
+  },
+  methods: {
+    // 获取简单员工信息
+    async getEmployeeSimple() {
+      this.peoples = await getEmployeeSimple()
     }
   }
 }

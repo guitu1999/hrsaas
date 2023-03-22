@@ -3,7 +3,7 @@
     <div class="app-container">
       <!--组织架构  -->
       <el-card class="tree-card">
-        <TreeTool :tree-node="company" :is-rooter="true" />
+        <TreeTool :tree-node="company" :is-rooter="true" @addDepts="addDepts" />
 
         <!--放置一个属性   这里的props和我们之前学习的父传子 的props没关系-->
         <el-tree :data="departs" :props="defaultProps">
@@ -45,7 +45,7 @@ export default {
     async getDepartments() {
       try {
         const result = await getDepartments()
-        this.company = { name: result.companyName, manager: '负责人' }
+        this.company = { name: result.companyName, manager: '负责人', id: '' }
         this.departs = tranListToTreeData(result.depts, '')
       } catch (err) {
         console.log('部门列表接口请求失败', err)
