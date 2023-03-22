@@ -12,7 +12,7 @@
         </el-tree>
       </el-card>
     </div>
-    <addDept :tree-node="node" :show-dialog.sync="showDialog" @addDepts="getDepartments" />
+    <addDept ref="addDept" :tree-node="node" :show-dialog.sync="showDialog" @addDepts="getDepartments" />
   </div>
 </template>
 
@@ -61,6 +61,8 @@ export default {
     editDepts(node) {
       this.showDialog = true // 显示弹窗
       this.node = node
+      // 调用子组件的获取部门详情方法
+      this.$refs.addDept.getDepartDetail(node.id)
     }
   }
 }
