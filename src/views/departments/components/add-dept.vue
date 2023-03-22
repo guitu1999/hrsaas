@@ -44,12 +44,12 @@ export default {
   },
   data() {
     // 校验方法
-    const checkNameRepeat = async(rule, value, callback) => {
+    const checkNameRepeat = async (rule, value, callback) => {
       const { depts } = await getDepartments()
       const result = depts.filter((item) => item.pid === this.treeNode.id).some(obj => obj.name === value)
       result ? callback(new Error(`同级部门下已经有${value}的部门了`)) : callback()
     }
-    const checkCodeRepeat = async(rule, value, callback) => {
+    const checkCodeRepeat = async (rule, value, callback) => {
       const { depts } = await getDepartments()
       // alue不为空 因为我们的部门有可能没有code
       const result = depts.some(item => item.code === value && value)
@@ -135,6 +135,8 @@ export default {
           await addDepartments({ ...this.formData, pid: this.treeNode.id })
           // 更新父页面数据
           this.$emit('addDepts')
+          // 关闭弹窗 sync修饰符关闭
+          this.$emit('update:showDialog', false)
         } else {
           console.log('校验失败')
         }
