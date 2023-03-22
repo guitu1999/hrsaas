@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="添加子部门" :visible="showDialog">
+  <el-dialog title="添加子部门" :visible="showDialog" @close="cancelBtn">
     <el-form ref="formDept" :model="formData" :rules="rules" label-width="120px">
       <el-form-item prop="name" label="部门名称">
         <el-input v-model="formData.name" style="width: 80%;" placeholder="1-50个字符" />
@@ -20,7 +20,7 @@
     <el-row slot="footer" type="flex" justify="center">
       <el-col :span="6">
         <el-button type="primary" size="small" @click="sureBtn">确定</el-button>
-        <el-button size="small">取消</el-button>
+        <el-button size="small" @click="cancelBtn">取消</el-button>
       </el-col>
     </el-row>
   </el-dialog>
@@ -141,6 +141,11 @@ export default {
           console.log('校验失败')
         }
       })
+    },
+    // 取消方法
+    cancelBtn() {
+      this.$refs.formDept.resetFields() // 重置表单
+      this.$emit('update:showDialog', false) // 关闭弹窗
     }
   }
 }
