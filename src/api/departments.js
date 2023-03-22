@@ -21,6 +21,14 @@ export function addDepartments(data) {
     data
   })
 }
+// 编辑部门信息
+export function updateDepartments(data) {
+  return request({
+    url: `/company/department/${data.id}`,
+    method: 'put',
+    data
+  })
+}
 // 获取部门详细信息
 export function getDepartDetail(id) {
   return request({
