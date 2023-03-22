@@ -52,6 +52,7 @@ export default {
         this.$emit('addDepts', this.treeNode)
       } else if (type === 'edit') {
         // 编辑
+        this.$emit('editDepts', this.treeNode)
       } else if (type === 'del') {
         // 删除
         this.$confirm('确定删除该部门吗?').then(() => {

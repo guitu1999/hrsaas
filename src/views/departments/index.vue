@@ -6,8 +6,9 @@
         <TreeTool :tree-node="company" :is-rooter="true" @addDepts="addDepts" />
 
         <!--放置一个属性   这里的props和我们之前学习的父传子 的props没关系-->
-        <el-tree :data="departs" :props="defaultProps">
-          <TreeTool slot-scope="{data}" :tree-node="data" @addDepts="addDepts" @delDepts="getDepartments" />
+        <el-tree :default-expand-all="true" :data="departs" :props="defaultProps">
+          <TreeTool slot-scope="{data}" :tree-node="data" @editDepts="editDepts" @addDepts="addDepts"
+            @delDepts="getDepartments" />
         </el-tree>
       </el-card>
     </div>
@@ -53,6 +54,11 @@ export default {
     },
     // 添加部门
     addDepts(node) {
+      this.showDialog = true // 显示弹窗
+      this.node = node
+    },
+    // 编辑部门
+    editDepts(node) {
       this.showDialog = true // 显示弹窗
       this.node = node
     }
