@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="添加子部门" :visible="showDialog" @close="cancelBtn">
+  <el-dialog :title="showTitle" :visible="showDialog" @close="cancelBtn">
     <el-form ref="formDept" :model="formData" :rules="rules" label-width="120px">
       <el-form-item prop="name" label="部门名称">
         <el-input v-model="formData.name" style="width: 80%;" placeholder="1-50个字符" />
@@ -30,6 +30,7 @@
 import { getDepartments, addDepartments, getDepartDetail } from '@/api/departments'
 import { getEmployeeSimple } from '@/api/employees'
 export default {
+  // props 是一个异步方法
   props: {
     // 是否显示
     showDialog: {
@@ -122,6 +123,12 @@ export default {
       }
     }
   },
+  // 计算属性
+  computed: {
+    showTitle() {
+      return this.formData.id ? '编辑部门' : '添加部门'
+    }
+  },
   methods: {
     // 获取简单员工信息
     async getEmployeeSimple() {
@@ -144,6 +151,13 @@ export default {
     },
     // 取消方法
     cancelBtn() {
+      // 重置表单  resetFields只会重置data中定义的  而id则不会清空
+      this.formData = {
+        name: '', // 部门名称
+        code: '', // 部门编码
+        manager: '', // 部门管理者
+        introduce: '' // 部门介绍
+      }
       this.$refs.formDept.resetFields() // 重置表单
       this.$emit('update:showDialog', false) // 关闭弹窗
     },
