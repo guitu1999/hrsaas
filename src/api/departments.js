@@ -6,3 +6,10 @@ export function getDepartments() {
     url: '/company/department'
   })
 }
+// 删除组织架构
+export function delDepartments(id) {
+  return request({
+    url: `/company/department/${id}`,
+    method: 'delete'
+  })
+}
