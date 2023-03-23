@@ -7,18 +7,19 @@
             <el-row style="height:60px">
               <el-button icon="el-icon-plus" size="small" type="primary">新建角色</el-button>
             </el-row>
-            <el-table>
-              <el-table-culumn label="序号" width="120" />
-              <el-table-culumn label="角色名称" width="240" />
-              <el-table-culumn label="描述" />
-              <el-table-culumn label="操作">
+            <el-table :data="list">
+              <el-table-column align="center" type="index" label="序号" width="120" />
+              <el-table-column align="center" prop="name" label="角色名称" width="240" />
+              <el-table-column align="center" prop="description" label="描述" />
+              <el-table-column align="center" label="操作">
                 <el-button size="small" type="success">分配权限</el-button>
                 <el-button size="small" type="primary">编辑</el-button>
                 <el-button size="small" type="danger">删除</el-button>
-              </el-table-culumn>
+              </el-table-column>
             </el-table>
             <el-row type="flex" justify="center" align="middle" style="height: 60px;">
-              <el-pagination layout="prev, pager, next" />
+              <el-pagination :total="page.total" :current-page="page.page" layout="prev, pager, next"
+                :page-size="page.pagesize" @current-change="changePage" />
             </el-row>
           </el-tab-pane>
           <el-tab-pane label="公司信息">
@@ -45,8 +46,35 @@
 </template>
 
 <script>
+import { getRoleList } from '@/api/settings'
 export default {
-
+  data() {
+    return {
+      list: [], // 角色列表信息
+      page: {
+        page: 1,
+        pagesize: 10,
+        total: 0
+      }
+    }
+  },
+  created() {
+    this.getRoleList()
+  },
+  methods: {
+    // 获取角色列表
+    async getRoleList() {
+      const { total, rows } = await getRoleList(this.page)
+      this.page.total = total
+      this.list = rows
+      console.log('打印list', this.list)
+    },
+    // 改变分页的页数
+    changePage(val) {
+      this.page.page = val
+      this.getRoleList()
+    }
+  }
 }
 </script>
 
