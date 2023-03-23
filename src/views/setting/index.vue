@@ -26,16 +26,19 @@
             <el-alert title="对公司名称、公司地址、营业执照、公司地区的更新，将使得公司资料被重新审核，请谨慎修改" type="info" show-icon :closable="false" />
             <el-form label-width="120px" style="margin-top:50px">
               <el-form-item label="公司名称">
-                <el-input disabled style="width:400px" />
+                <el-input v-model="formData.name" disabled style="width:400px" />
               </el-form-item>
               <el-form-item label="公司地址">
-                <el-input disabled style="width:400px" />
+                <el-input v-model="formData.companyAddress" disabled style="width:400px" />
+              </el-form-item>
+              <el-form-item label="公司电话">
+                <el-input v-model="formData.companyPhone" disabled style="width:400px" />
               </el-form-item>
               <el-form-item label="邮箱">
-                <el-input disabled style="width:400px" />
+                <el-input v-model="formData.mailbox" disabled style="width:400px" />
               </el-form-item>
               <el-form-item label="备注">
-                <el-input type="textarea" :rows="3" disabled style="width:400px" />
+                <el-input v-model="formData.remarks" type="textarea" :rows="3" disabled style="width:400px" />
               </el-form-item>
             </el-form>
           </el-tab-pane>
@@ -46,7 +49,8 @@
 </template>
 
 <script>
-import { getRoleList } from '@/api/settings'
+import { mapGetters } from 'vuex'
+import { getRoleList, getCompanyInfo } from '@/api/settings'
 export default {
   data() {
     return {
@@ -55,11 +59,16 @@ export default {
         page: 1,
         pagesize: 10,
         total: 0
-      }
+      },
+      formData: {} // 企业信息
     }
+  },
+  computed: {
+    ...mapGetters(['companyId'])
   },
   created() {
     this.getRoleList()
+    this.getCompanyInfo()
   },
   methods: {
     // 获取角色列表
@@ -68,6 +77,10 @@ export default {
       this.page.total = total
       this.list = rows
       console.log('打印list', this.list)
+    },
+    // 获取公司信息
+    async getCompanyInfo() {
+      this.formData = await getCompanyInfo(this.companyId)
     },
     // 改变分页的页数
     changePage(val) {
