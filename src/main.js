@@ -12,15 +12,18 @@ import App from './App'
 import store from './store'
 import router from './router'
 import Component from '@/components/index' // 引入全局组件
-import * as directives from '@/directives'
+import * as directives from '@/directives' // 引入自定义指令
+import * as filters from '@/filters/index' // 引入过滤器
 import '@/icons' // icon
 import '@/permission' // 权限管理
 
 Object.keys(directives).forEach(key => {
   Vue.directive(key, directives[key]) // 注册自定义指令
 })
-// 全局导入组件
 
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key]) // 注册全局过滤器
+})
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
