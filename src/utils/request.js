@@ -69,7 +69,7 @@ service.interceptors.response.use(
   (error) => {
     // error 里 有个response对象
     // 后端返回10002  token失效
-    if (error.response && error.respoonse.data && error.respoonse.data.code === 10002) {
+    if (error.response && error.respoonse && error.respoonse.data && error.respoonse.data.code === 10002) {
       store.dispatch('user/lgout')
       router.push('/login')
     } else {
