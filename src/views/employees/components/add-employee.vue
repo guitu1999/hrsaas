@@ -1,6 +1,6 @@
 <template>
-  <el-dialog :visible="showDialog" title="添加员工">
-    <el-form :model="formData" :rules="rules" label-width="120px">
+  <el-dialog :visible="showDialog" title="添加员工" @close="cancelBtn">
+    <el-form ref="employee" :model="formData" :rules="rules" label-width="120px">
       <el-form-item prop="username" label="姓名">
         <el-input v-model="formData.username" style="width:50%" placeholder="请输入姓名" />
       </el-form-item>
@@ -30,8 +30,8 @@
 
     <el-row name="footer" type="flex" justify="center">
       <el-col :span="6">
-        <el-button size="small">取消</el-button>
-        <el-button type="primary" size="small">确定</el-button>
+        <el-button size="small" @click="cancelBtn">取消</el-button>
+        <el-button type="primary" size="small" @click="sureBtn">确定</el-button>
       </el-col>
 
     </el-row>
@@ -44,6 +44,7 @@ import { getDepartments } from '@/api/departments'
 // 引入 转成属性结构方法
 import { tranListToTreeData } from '@/utils'
 import EmployeeEnum from '@/api/constant/employees'
+import { addEmployee } from '@/api/employees'
 export default {
   props: {
     showDialog: {
@@ -115,6 +116,37 @@ export default {
       // console.log(node)
       this.formData.departmentName = node.name
       this.showTree = false
+    },
+    // 取消方法
+    cancelBtn() {
+      // 清空表单
+      this.formData = {
+        username: '',
+        mobile: '',
+        formOfEmployment: '',
+        workNumber: '',
+        departmentName: '',
+        timeOfEntry: '',
+        correctionTime: ''
+      }
+      // 清空校验规则
+      this.$refs.employee.resetFields()
+      // 关闭弹窗
+      this.$emit('update:showDialog', false)
+    },
+    // 确定方法
+    async sureBtn() {
+      try {
+        // 校验表单
+        await this.$refs.employee.validate()
+        await addEmployee(this.formData)
+        // 关闭弹窗   sync修饰符
+        this.$emit('update:showDialog', false)
+        // 重新父组件拉取数据
+        this.$parent.getEmployeeList()
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 }
