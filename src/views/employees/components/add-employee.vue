@@ -8,16 +8,20 @@
         <el-input v-model="formData.mobile" style="width:50%" placeholder="请输入手机号" />
       </el-form-item>
       <el-form-item prop="timeOfEntry" label="入职时间">
-        <el-date-picker v-model="timeOfEntry" style="width:50%" placeholder="请选择入职时间" />
+        <el-date-picker v-model="formData.timeOfEntry" style="width:50%" placeholder="请选择入职时间" />
       </el-form-item>
       <el-form-item prop="formOfEmployment" label="聘用形式">
-        <el-select v-model="formData.formOfEmployment" style="width:50%" placeholder="请选择" />
+        <el-select v-model="formData.formOfEmployment" style="width:50%" placeholder="请选择">
+          <el-option v-for="obj in EmployeeEnum.hireType" :key="obj.id" :label="obj.value" :value="obj.id" />
+        </el-select>
       </el-form-item>
       <el-form-item prop="workNumber" label="工号">
         <el-input v-model="formData.workNumber" style="width:50%" placeholder="请输入工号" />
       </el-form-item>
       <el-form-item prop="departmentName" label="部门">
-        <el-input v-model="formData.departmentName" style="width:50%" placeholder="请选择部门" />
+        <el-input v-model="formData.departmentName" style="width:50%" placeholder="请选择部门" @focus="chooseDepart" />
+        <el-tree v-if="showTree" v-loading="loading" :data="treeList" :default-expand-all="true"
+          :props="{ label: 'name' }" @node-click="chooseNode" />
       </el-form-item>
       <el-form-item prop="correctionTime" label="转正时间">
         <el-date-picker v-model="formData.correctionTime" style="width:50%" placeholder="请选择转正时间" />
@@ -35,6 +39,11 @@
 </template>
 
 <script>
+// 组织架构
+import { getDepartments } from '@/api/departments'
+// 引入 转成属性结构方法
+import { tranListToTreeData } from '@/utils'
+import EmployeeEnum from '@/api/constant/employees'
 export default {
   props: {
     showDialog: {
@@ -44,6 +53,7 @@ export default {
   },
   data() {
     return {
+      EmployeeEnum,
       formData: {
         username: '',
         mobile: '',
@@ -53,6 +63,9 @@ export default {
         timeOfEntry: '',
         correctionTime: ''
       },
+      treeList: [], // 部门列表
+      showTree: false, // 显示树形结构
+      loading: false, // 加载状态
       rules: {
         username: [
           {
@@ -85,6 +98,23 @@ export default {
         departmentName: [{ required: true, message: '部门不能为空', trigger: 'change' }],
         timeOfEntry: [{ required: true, message: '入职时间', trigger: 'blur' }]
       }
+    }
+  },
+  methods: {
+    // 选择部门
+    async chooseDepart() {
+      this.showTree = true
+      this.loading = true
+      const { depts } = await getDepartments()
+      // console.log('depts', depts)
+      this.treeList = tranListToTreeData(depts, '')
+      this.loading = false
+    },
+    // 选择节点
+    chooseNode(node) {
+      // console.log(node)
+      this.formData.departmentName = node.name
+      this.showTree = false
     }
   }
 }
