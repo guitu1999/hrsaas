@@ -7,7 +7,7 @@
             <el-row style="height:60px">
               <el-button icon="el-icon-plus" size="small" type="primary" @click="addRole">新建角色</el-button>
             </el-row>
-            <el-table :data="list">
+            <el-table border="" :data="list">
               <el-table-column align="center" type="index" label="序号" width="120" />
               <el-table-column align="center" prop="name" label="角色名称" width="240" />
               <el-table-column align="center" prop="description" label="描述" />

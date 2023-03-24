@@ -11,7 +11,7 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
-
+import Component from '@/components/index' // 引入全局组件
 import * as directives from '@/directives'
 import '@/icons' // icon
 import '@/permission' // 权限管理
@@ -19,6 +19,7 @@ import '@/permission' // 权限管理
 Object.keys(directives).forEach(key => {
   Vue.directive(key, directives[key]) // 注册自定义指令
 })
+// 全局导入组件
 
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
@@ -26,7 +27,7 @@ Vue.use(ElementUI, { locale })
 // Vue.use(ElementUI)
 
 Vue.config.productionTip = false
-
+Vue.use(Component) // 注册全局组间
 new Vue({
   el: '#app',
   router,
