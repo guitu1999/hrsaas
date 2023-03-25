@@ -4,6 +4,7 @@
             <h2>
                 工资
             </h2>
+            <ImageUpload />
             <UploadExcel />
         </div>
     </div>
