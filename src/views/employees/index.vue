@@ -10,7 +10,7 @@
         <!-- 右侧 -->
         <template #right>
           <el-button size="small" type="success" @click="$router.push('/import')">excel导入</el-button>
-          <el-button size="small" type="danger">excel导出</el-button>
+          <el-button size="small" type="danger" @click="toExcel">excel导出</el-button>
           <el-button size="small" type="primary" @click="showDialog = true">新增员工</el-button>
         </template>
       </PageTools>
@@ -107,6 +107,20 @@ export default {
       } catch (err) {
         console.log('err', err)
       }
+    },
+    // 导出excel
+    toExcel() {
+      // 懒加载  只有点击的时候才导入
+      import('@/vendor/Export2Excel').then(excel => {
+        // console.log('导出', excel)
+        excel.export_json_to_excel({
+          header: ['姓名', '年龄'], // 表头
+          data: [['张三', 24]], // 数据
+          filename: '员工数据表', // 表格名称
+          autoWidth: true, // 是否自适应
+          bookType: 'xlsx' // 导出格式
+        })
+      })
     }
   }
 
