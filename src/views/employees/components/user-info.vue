@@ -246,7 +246,8 @@
 
 <script>
 import EmployeeEnum from '@/api/constant/employees'
-
+import { getPersonalDetail, updatePersonal, saveUserDetailById } from '@/api/employees'
+import { getUserDetail } from '@/api/user'
 export default {
   data() {
     return {
@@ -317,7 +318,35 @@ export default {
         remarks: '' // 备注
       }
     }
+  },
+  created() {
+    this.getUserDetail()
+    this.getPersonalDetail()
+  },
+  methods: {
+    // 获取用户的基本信息
+    async getUserDetail() {
+      this.userInfo = await getUserDetail(this.userId)
+    },
+    // 获取用户详情的信息
+    async getPersonalDetail() {
+      this.formData = await getPersonalDetail(this.userId)
+    },
+    // 保存用户的基本信息
+    async saveUser() {
+      // return console.log('点击了保存用户的基本信息', this.userInfo)
+      await saveUserDetailById(this.userInfo)
+      this.$message.success('保存成功')
+      this.getUserDetail()
+    },
+    // 保存用户详情的信息
+    async savePersonal() {
+      await updatePersonal(this.formData)
+      this.$message.success('保存成功')
+      this.getPersonalDetail()
+    }
   }
+
 }
 </script>
 
