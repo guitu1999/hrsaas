@@ -109,16 +109,40 @@ export default {
       }
     },
     // 导出excel
-    toExcel() {
+    async toExcel() {
+      const headers = {
+        '手机号': 'mobile',
+        '姓名': 'username',
+        '入职日期': 'timeOfEntry',
+        '聘用形式': 'formOfEmployment',
+        '转正日期': 'correctionTime',
+        '工号': 'workNumber',
+        '部门': 'departmentName'
+      }
+      // 获取接口中的全部数据
+      const { rows } = await getEmployeeList({ page: 1, size: this.page.total })
+      console.log('打印rows', rows)
+      // 调用数据处理方法
+      const data = this.formatJson(headers, rows)
       // 懒加载  只有点击的时候才导入
+
       import('@/vendor/Export2Excel').then(excel => {
         // console.log('导出', excel)
         excel.export_json_to_excel({
-          header: ['姓名', '年龄'], // 表头
-          data: [['张三', 24]], // 数据
-          filename: '员工数据表', // 表格名称
+          header: Object.keys(headers), // 表头
+          data: data, // 数据
+          filename: '员工信息表', // 表格名称
           autoWidth: true, // 是否自适应
           bookType: 'xlsx' // 导出格式
+        })
+      })
+    },
+    // 数组转成二维数组[[]]
+    formatJson(headers, list) {
+      console.log('1111', headers, list)
+      return list.map((item) => {
+        return Object.keys(headers).map(key => {
+          return item[headers[key]]
         })
       })
     }
