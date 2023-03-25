@@ -57,6 +57,7 @@
 import EmployeeEnum from '@/api/constant/employees'
 import { getEmployeeList, delEmployee } from '@/api/employees'
 import addEmployee from './components/add-employee.vue'
+import { formatDate } from '@/filters' // 引入时间处理过滤器
 export default {
   components: {
     addEmployee
@@ -142,6 +143,14 @@ export default {
       console.log('1111', headers, list)
       return list.map((item) => {
         return Object.keys(headers).map(key => {
+          if (headers[key] === 'timeOfEntry' || headers[key] === 'correctionTime') {
+            // 时间的处理
+            return formatDate(item[headers[key]])
+          } else if (headers[key] === 'formOfEmployment') {
+            // 聘用形式的处理   find返回当前找到的对象
+            const obj = EmployeeEnum.hireType.find(obj => obj.id === item[headers[key]])
+            return obj ? obj.value : '未知'
+          }
           return item[headers[key]]
         })
       })
