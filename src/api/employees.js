@@ -37,3 +37,11 @@ export function importEmployee(data) {
     data
   })
 }
+// 更改保存员工信息
+export function saveUserDetailById(data) {
+  return request({
+    url: `/sys/user/${data.id}`,
+    method: 'put',
+    data
+  })
+}
