@@ -112,8 +112,8 @@ export default {
     // 导出excel
     async toExcel() {
       const headers = {
-        '手机号': 'mobile',
         '姓名': 'username',
+        '手机号': 'mobile',
         '入职日期': 'timeOfEntry',
         '聘用形式': 'formOfEmployment',
         '转正日期': 'correctionTime',
@@ -126,7 +126,8 @@ export default {
       // 调用数据处理方法
       const data = this.formatJson(headers, rows)
       // 懒加载  只有点击的时候才导入
-
+      const multiHeader = [['姓名', '主要信息', '', '', '', '', '部门']] // 复杂表头
+      const merges = ['A1:A2', 'B1:F1', 'G1:G2']// 合并的表头
       import('@/vendor/Export2Excel').then(excel => {
         // console.log('导出', excel)
         excel.export_json_to_excel({
@@ -134,7 +135,9 @@ export default {
           data: data, // 数据
           filename: '员工信息表', // 表格名称
           autoWidth: true, // 是否自适应
-          bookType: 'xlsx' // 导出格式
+          bookType: 'xlsx', // 导出格式
+          multiHeader, // 复杂表头
+          merges // 合并的部分
         })
       })
     },
