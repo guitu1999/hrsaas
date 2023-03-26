@@ -329,27 +329,41 @@ export default {
     async getUserDetail() {
       this.userInfo = await getUserDetail(this.userId)
       console.log('111', this.userInfo)
-      if (this.userInfo.staffPhoto) {
+      if (this.userInfo.staffPhoto && this.userInfo.staffPhoto.trim()) {
         this.$refs.avaterImg.fileList = [{ url: this.userInfo.staffPhoto, upload: true }]
       }
     },
     // 获取用户详情的信息
     async getPersonalDetail() {
       this.formData = await getPersonalDetail(this.userId)
-      if (this.formData.staffPhoto) {
+      if (this.formData.staffPhoto && this.formData.staffPhoto.trim()) {
         this.$refs.staffImg.fileList = [{ url: this.formData.staffPhoto, upload: true }]
       }
     },
     // 保存用户的基本信息
     async saveUser() {
-      // return console.log('点击了保存用户的基本信息', this.userInfo)
-      await saveUserDetailById(this.userInfo)
+      // 判断是否上传到腾讯云 成功  upload?true
+      const list = this.$refs.avaterImg.fileList
+      list.some(item => {
+        if (!item.upload) {
+          return this.$message('图片未上传成功')
+        }
+      })
+      // 如果没有上传通头像 需要传一个空字符串
+      await saveUserDetailById({ ...this.userInfo, staffPhoto: list && list.length > 0 ? list[0].url : ' ' })
       this.$message.success('保存成功')
       this.getUserDetail()
     },
     // 保存用户详情的信息
     async savePersonal() {
-      await updatePersonal(this.formData)
+      const list = this.$refs.staffImg.fileList
+      list.some(item => {
+        if (!item.upload) {
+          return this.$message('图片未上传成功')
+        }
+      })
+
+      await updatePersonal({ ...this.formData, staffPhoto: list && list.length > 0 ? list[0].url : ' ' })
       this.$message.success('保存成功')
       this.getPersonalDetail()
     }
