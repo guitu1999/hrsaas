@@ -13,7 +13,7 @@
 </template>
 
 <script>
-// 引入COS
+// 引入COS 腾讯云sdk
 import COS from 'cos-js-sdk-v5'
 // 实例化
 var cos = new COS({
@@ -25,7 +25,8 @@ export default {
     return {
       imgUrl: '', // 图片地址
       dialogVisible: false, // 图片预览弹窗
-      fileList: [{ url: 'https://img2.baidu.com/it/u=3618236253,1028428296&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1679850000&t=1267ebdc06f172b2db194aa8c92400e2' }]
+      fileList: [],
+      nowImgid: null // 当前上传的图片id
     }
   },
   // 计算属性
@@ -69,6 +70,8 @@ export default {
         this.$message.error('上传图片只能小于5M')
         return false
       }
+      this.nowImgid = file.uid
+      console.log('打印当前上传的图片id', this.nowImgid)
       // 返回一个true   允许上传
       return true
     },
@@ -80,9 +83,22 @@ export default {
         Region: 'ap-beijing', // 存储桶所在地域
         Key: 'params.file.uid', // 对象在存储桶中的唯一标识
         Body: pramas.file // 上传的文件对象
-      }, function (err, data) {
+      }, (err, data) => {
         // 上传的回调函数
         console.log(err || data)
+        if (data.statusCode === 200 && !err) {
+          // 查找文件列表中 与 当前上传的文件id  替换地址为腾讯云的新地址
+          this.fileList = this.fileList.map(item => {
+            if (item.uid === this.nowImgid) {
+              // console.log('打印item', item)
+              // upload 为true 表示这张图片已经上传完毕 这个属性要为我们后期应用的时候做标记
+              // 保存  => 图片有大有小 => 上传速度有快又慢 =>要根据有没有upload这个标记来决定是否去保存
+              return { url: 'http://' + data.Location, upload: true }
+            }
+            return item // 上传多张图片  其他的返回
+          })
+        }
+        console.log('打印上传后的图片数组', this.fileList)
       }
       )
     }
