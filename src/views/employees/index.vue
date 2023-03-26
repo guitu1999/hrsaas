@@ -21,7 +21,7 @@
         <el-table-column label="头像" align="center">
           <template v-slot="{ row }">
             <img v-imgError="require('@/assets/common/bigUserHeader.png')" :src="row.staffPhoto"
-              style="border-radius: 50%; width: 100px; height: 100px; padding: 10px">
+              style="border-radius: 50%; width: 100px; height: 100px; padding: 10px" @click="lookCode(row.staffPhoto)">
           </template>
         </el-table-column>
         <el-table-column label="工号" sortable="" prop="workNumber" />
@@ -56,6 +56,12 @@
     </div>
     <!-- sync  子组件改变父组件 的语法糖 -->
     <addEmployee :show-dialog.sync="showDialog" />
+    <!-- 二维码弹窗 -->
+    <el-dialog title="二维码" :visible.sync="showCode">
+      <el-row type="flex" justify="center">
+        <canvas ref="code" />
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
@@ -64,6 +70,7 @@ import EmployeeEnum from '@/api/constant/employees'
 import { getEmployeeList, delEmployee } from '@/api/employees'
 import addEmployee from './components/add-employee.vue'
 import { formatDate } from '@/filters' // 引入时间处理过滤器
+import QrCode from 'qrcode' // 引入二维码
 export default {
   components: {
     addEmployee
@@ -77,7 +84,8 @@ export default {
         size: 10,
         total: 0
       },
-      showDialog: false
+      showDialog: false,
+      showCode: false // 显示二维码
     }
   },
   created() {
@@ -162,6 +170,18 @@ export default {
           }
           return item[headers[key]]
         })
+      })
+    },
+    // 显示二维码
+    lookCode(url) {
+      if (!url) {
+        return this.$message('暂未上传头像')
+      }
+      // 显示弹窗
+      this.showCode = true
+      // 等待dom更新完毕
+      this.$nextTick(() => {
+        QrCode.toCanvas(this.$refs.code, url)
       })
     }
   }
