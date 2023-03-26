@@ -1,8 +1,9 @@
 <template>
   <div>
     <!-- action 为要上传到的地方 -->
-    <el-upload :before-upload="beforeUpload" :limit="1" :file-list="fileList" list-type="picture-card" action="#"
-      :class="{ showImg: fileComputed }" :on-preview="previewImg" :on-remove="delImg" :on-change="changeFile">
+    <el-upload :http-request="uploadImg" :before-upload="beforeUpload" :limit="1" :file-list="fileList"
+      list-type="picture-card" action="#" :class="{ showImg: fileComputed }" :on-preview="previewImg" :on-remove="delImg"
+      :on-change="changeFile">
       <i class="el-icon-plus" />
     </el-upload>
     <el-dialog title="图片预览" :visible.sync="dialogVisible">
@@ -12,6 +13,13 @@
 </template>
 
 <script>
+// 引入COS
+import COS from 'cos-js-sdk-v5'
+// 实例化
+var cos = new COS({
+  SecretId: 'AKIDSBdoiMjpfEXZJn0wc2C6k6D4dvxiCOJx', // 身份识别的id
+  SecretKey: 'OWMwFH2XmkRqzrRknY2FCPL0OVKsACxR' // 身份识别的密钥
+})
 export default {
   data() {
     return {
@@ -63,6 +71,20 @@ export default {
       }
       // 返回一个true   允许上传
       return true
+    },
+    // 上传至腾讯云
+    uploadImg(pramas) {
+      console.log('pramas', pramas)
+      cos.putObject({
+        Bucket: 'guitu-1259043284', // 存储桶名称
+        Region: 'ap-beijing', // 存储桶所在地域
+        Key: 'params.file.uid', // 对象在存储桶中的唯一标识
+        Body: pramas.file // 上传的文件对象
+      }, function (err, data) {
+        // 上传的回调函数
+        console.log(err || data)
+      }
+      )
     }
 
   }
