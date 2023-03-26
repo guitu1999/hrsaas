@@ -43,7 +43,7 @@
             <el-button type="text" size="small">转正</el-button>
             <el-button type="text" size="small">调岗</el-button>
             <el-button type="text" size="small">离职</el-button>
-            <el-button type="text" size="small">角色</el-button>
+            <el-button type="text" size="small" @click="assignRole(row.id)">角色</el-button>
             <el-button type="text" size="small" @click="delBtn(row.id)">删除</el-button>
           </template>
         </el-table-column>
@@ -62,6 +62,8 @@
         <canvas ref="code" />
       </el-row>
     </el-dialog>
+    <!-- 分配角色 -->
+    <assignRole ref="role" :user-id="userId" :show-role-dialog.sync="showRoleDialog" />
   </div>
 </template>
 
@@ -71,9 +73,11 @@ import { getEmployeeList, delEmployee } from '@/api/employees'
 import addEmployee from './components/add-employee.vue'
 import { formatDate } from '@/filters' // 引入时间处理过滤器
 import QrCode from 'qrcode' // 引入二维码
+import assignRole from './components/assign-role.vue' // 引入分配角色
 export default {
   components: {
-    addEmployee
+    addEmployee,
+    assignRole
   },
   data() {
     return {
@@ -85,7 +89,9 @@ export default {
         total: 0
       },
       showDialog: false,
-      showCode: false // 显示二维码
+      showCode: false, // 显示二维码
+      showRoleDialog: false, // 显示分配角色
+      userId: null // 用户id
     }
   },
   created() {
@@ -183,6 +189,14 @@ export default {
       this.$nextTick(() => {
         QrCode.toCanvas(this.$refs.code, url)
       })
+    },
+    // 分配角色
+    async assignRole(id) {
+      console.log('点击了分配角色', id)
+      // props传值 时异步操作
+      this.userId = id
+      await this.$refs.role.getUserDetail(id)
+      this.showRoleDialog = true
     }
   }
 
