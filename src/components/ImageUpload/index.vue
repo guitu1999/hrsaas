@@ -1,8 +1,8 @@
 <template>
   <div>
     <!-- action 为要上传到的地方 -->
-    <el-upload :limit="1" :file-list="fileList" list-type="picture-card" action="#" :class="{ showImg: fileComputed }"
-      :on-preview="previewImg" :on-remove="delImg" :on-change="changeFile">
+    <el-upload :before-upload="beforeUpload" :limit="1" :file-list="fileList" list-type="picture-card" action="#"
+      :class="{ showImg: fileComputed }" :on-preview="previewImg" :on-remove="delImg" :on-change="changeFile">
       <i class="el-icon-plus" />
     </el-upload>
     <el-dialog title="图片预览" :visible.sync="dialogVisible">
@@ -42,9 +42,27 @@ export default {
     // 上传图片
     // 添加文件、上传成功和上传失败时都会被调用(执行多次)
     changeFile(file, filelist) {
-      console.log('file', file)
-      console.log('filelist', filelist)
+      // console.log('file', file)
+      // console.log('filelist', filelist)
       this.fileList = filelist.map(item => item)
+    },
+    // 上传图片之前
+    beforeUpload(file) {
+      console.log('上传之前', file)
+      // 判断上传的类型
+      const types = ['image/jpeg', 'image/gif', 'image/bmp', 'image/png']
+      if (!types.some(item => item === file.type)) {
+        this.$message.error('上传图片只能是JPG、GIF、BMP、PNG 格式!')
+        return false
+      }
+      // 判断上传的大小  1mb=1024kb 1kb=1024b
+      const maxSize = 5 * 1024 * 1024
+      if (file.size > maxSize) {
+        this.$message.error('上传图片只能小于5M')
+        return false
+      }
+      // 返回一个true   允许上传
+      return true
     }
 
   }
