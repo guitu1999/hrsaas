@@ -9,6 +9,7 @@
     <el-dialog title="图片预览" :visible.sync="dialogVisible">
       <img :src="imgUrl" style="width: 100%;">
     </el-dialog>
+    <el-progress v-if="showPer" style="width: 180px;" :percentage="percentage" />
   </div>
 </template>
 
@@ -26,7 +27,9 @@ export default {
       imgUrl: '', // 图片地址
       dialogVisible: false, // 图片预览弹窗
       fileList: [],
-      nowImgid: null // 当前上传的图片id
+      nowImgid: null, // 当前上传的图片id
+      percentage: 0, // 上传进度
+      showPer: false // 是否显示上传进度条
     }
   },
   // 计算属性
@@ -58,6 +61,7 @@ export default {
     // 上传图片之前
     beforeUpload(file) {
       console.log('上传之前', file)
+
       // 判断上传的类型
       const types = ['image/jpeg', 'image/gif', 'image/bmp', 'image/png']
       if (!types.some(item => item === file.type)) {
@@ -71,6 +75,7 @@ export default {
         return false
       }
       this.nowImgid = file.uid
+      this.showPer = true // 显示上传进度条
       console.log('打印当前上传的图片id', this.nowImgid)
       // 返回一个true   允许上传
       return true
@@ -81,8 +86,12 @@ export default {
       cos.putObject({
         Bucket: 'guitu-1259043284', // 存储桶名称
         Region: 'ap-beijing', // 存储桶所在地域
-        Key: 'params.file.uid', // 对象在存储桶中的唯一标识
-        Body: pramas.file // 上传的文件对象
+        Key: pramas.file.name, // 对象在存储桶中的唯一标识
+        Body: pramas.file, // 上传的文件对象
+        onProgress: (data) => {
+          console.log('上传进度', data)
+          this.percentage = data.percent * 100
+        }
       }, (err, data) => {
         // 上传的回调函数
         console.log(err || data)
@@ -99,6 +108,11 @@ export default {
           })
         }
         console.log('打印上传后的图片数组', this.fileList)
+        // 延迟显示上传进度条  避免上传过快  不显示进度条
+        setTimeout(() => {
+          this.showPer = false
+          this.percentage = 0
+        }, 1000)
       }
       )
     }
