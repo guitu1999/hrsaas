@@ -16,7 +16,8 @@ import * as directives from '@/directives' // 引入自定义指令
 import * as filters from '@/filters/index' // 引入过滤器
 import '@/icons' // icon
 import '@/permission' // 权限管理
-
+import checkPermission from '@/mixin/checkPermission' // 引入mixin
+Vue.mixin(checkPermission) // 表示所有的组件都拥有了检查的方法
 Object.keys(directives).forEach(key => {
   Vue.directive(key, directives[key]) // 注册自定义指令
 })
