@@ -35,7 +35,8 @@ router.beforeEach(async (to, from, next) => {
 
         // 把这个动态路由 添加到 路由表中
         // addRoutes  添加动态路由到路由表  必须使用next(to.path)
-        router.addRoutes(routes)
+        // 404 加到最后
+        router.addRoutes([...routes, { path: '*', redirect: '/404', hidden: true }])
         next(to.path)
       } else {
         next()

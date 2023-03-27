@@ -1,5 +1,6 @@
 import { getToken, setToken, removeToken, setTimeStamp } from '@/utils/auth.js'
 import { login, getUserInfo, getUserDetail } from '@/api/user'
+import { resetRouter } from '@/router' // 重置路由
 const state = {
   // 每次登录先从缓存中读取token
   token: getToken() || null, // 登录的etoken
@@ -49,6 +50,11 @@ const actions = {
   async lgout(context) {
     context.commit('removeToken')
     context.commit('removeInfo')
+    // 重置路由
+    resetRouter()
+    // 设置权限模块下的路由为初始状态
+    // 调用 permission 另一子模块下的方法
+    context.commit('permission/setRoutes', [], { root: true })
   }
 }
 export default {

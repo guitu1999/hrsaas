@@ -67,7 +67,7 @@ export const asyncRoutes = [
   settingRouter,
   socialRouter
 ]
-
+// 创建路由
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }), // 管理滚动行为 如果出现滚动 切换就让 让页面回到顶部
@@ -76,7 +76,7 @@ const createRouter = () => new Router({
 
 const router = createRouter() // 实例化路由
 
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
+// 重置路由
 export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
