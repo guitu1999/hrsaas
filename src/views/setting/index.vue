@@ -66,7 +66,7 @@
       </el-row>
     </el-dialog>
     <el-dialog title="分配权限" :visible="showPermDialog" @close="btnPermCancel">
-      <el-tree :show-checkbox="true" :default-checked-keys="checkedList" :check-strictly="true" node-key="id"
+      <el-tree ref="tree" :show-checkbox="true" :default-checked-keys="checkedList" :check-strictly="true" node-key="id"
         :default-expand-all="true" :props="propsObj" :data="permData" />
       <!-- 确定 取消 -->
       <el-row slot="footer" type="flex" justify="center">
@@ -82,7 +82,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getRoleList, getCompanyInfo, deleteRole, getRoleDetail, updateRole, addRole } from '@/api/settings'
+import { getRoleList, getCompanyInfo, deleteRole, getRoleDetail, updateRole, addRole, assignPerm } from '@/api/settings'
 import { tranListToTreeData } from '@/utils'
 import { getPermissionList } from '@/api/permission'
 export default {
@@ -199,6 +199,17 @@ export default {
       this.roleId = id
       const { permIds } = await getRoleDetail(id) // permIds是当前角色所拥有的权限点数据
       this.checkedList = permIds
+    },
+    // 分配权限
+    async btnPermOK() {
+      await assignPerm({ permIds: this.$refs.tree.getCheckedKeys(), id: this.roleId })
+      this.$message.success('分配权限成功')
+      this.showPermDialog = false
+    },
+    // 取消
+    btnPermCancel() {
+      this.checkedList = []
+      this.showPermDialog = false
     }
   }
 }
