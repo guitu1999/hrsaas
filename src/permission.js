@@ -22,11 +22,24 @@ router.beforeEach(async (to, from, next) => {
       // 判断是否有用户id
       if (!store.getters.userId) {
         // 没有 ==> 请求获取用户信息异步方法
-        await store.dispatch('user/getUserInfoAsync')
+
+        // user/getUserInfoAsync 这里返回了一个结果
+        const { roles } = await store.dispatch('user/getUserInfoAsync')
         // 需要改成同步方法 加await async
         // 获取资料完毕后  再去放行
+
+        // 筛选用户的可用路由
+        // permission/filterRoutes 也返回了一个筛选得到的可用路由表
+        const routes = await store.dispatch('permission/filterRoutes', roles.menus)
+        console.log('打印这个routes', routes)
+
+        // 把这个动态路由 添加到 路由表中
+        // addRoutes  添加动态路由到路由表  必须使用next(to.path)
+        router.addRoutes(routes)
+        next(to.path)
+      } else {
+        next()
       }
-      next()
     }
   } else {
     // 没有token
