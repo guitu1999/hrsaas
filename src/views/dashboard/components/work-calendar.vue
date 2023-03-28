@@ -4,31 +4,47 @@
     <!-- 年和月 -->
     <el-row type="flex" justify="end">
       <!-- 年份 -->
-      <el-select v-model="nowYear" size="small" style="width: 120px;">
+      <el-select v-model="nowYear" size="small" style="width: 120px;" @change="dateChange">
         <el-option v-for="item in yearList" :key="item" :label="item" :value="item" />
       </el-select>
       <!-- 月份 -->
-      <el-select v-model="nowMonth" size="small" style="width: 120px;margin-left: 10px;">
+      <el-select v-model="nowMonth" size="small" style="width: 120px;margin-left: 10px;" @change="dateChange">
         <el-option v-for="item in 12" :key="item" :label="item" :value="item" />
       </el-select>
     </el-row>
-    <el-calendar v-model="value" />
+    <!-- 日历 -->
+    <el-calendar v-model="nowDate">
+      <template v-slot:dateCell="{ date, data }" class="content">
+        <div class="date-content">
+          <span class="text"> {{ data.day | getDay }}</span>
+          <span v-if="isWeek(date)" class="rest">休</span>
+        </div>
+      </template>
+    </el-calendar>
   </div>
 </template>
 
 <script>
 export default {
+  filters: {
+    getDay(value) {
+      const day = value.split('-')[2] // 08  18
+      return day.startsWith('0') ? day.substr(1) : day // 8 18
+    }
+  },
   props: {
     startDate: {
       type: Date,
-      default: new Date()
+      // 回调函数的返回值
+      default: () => new Date()
     }
   },
   data() {
     return {
       yearList: [], // 要遍历的年的数组
       nowYear: null, // 当前年份
-      nowMonth: null // 当前月份
+      nowMonth: null, // 当前月份
+      nowDate: null// 当前日期
     }
   },
   created() {
@@ -36,6 +52,21 @@ export default {
     this.nowYear = this.startDate.getFullYear()
     this.nowMonth = this.startDate.getMonth() + 1
     this.yearList = Array.from(Array(11), (value, index) => this.nowYear + index - 5)
+    this.dateChange()
+  },
+  methods: {
+    // 生成新的时间
+    dateChange() {
+      console.log('改变了时间')
+      const year = this.nowYear
+      const month = this.nowMonth
+      this.nowDate = `${year}-${month}-1`
+      console.log('打印当前日期', this.nowDate)
+    },
+    // 是否是休息日
+    isWeek(value) {
+      return value.getDay() === 6 || value.getDay() === 0
+    }
   }
 }
 </script>
