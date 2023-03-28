@@ -5,11 +5,11 @@
       <div>
         <div class="fl headL">
           <div class="headImg">
-            <img src="@/assets/common/head.jpg">
+            <img v-imgError="defaultimg" :src="staffPhoto">
           </div>
           <div class="headInfoTip">
-            <p class="firstChild">早安，管理员，祝你开心每一天！</p>
-            <p class="lastChild">早安，管理员，祝你开心每一天！</p>
+            <p class="firstChild">早安，{{ name }}，祝你开心每一天！</p>
+            <p class="lastChild">{{ name }} | {{ $store.state.user.userInfo.departmentName }} | {{ userInfo.company }}</p>
           </div>
         </div>
         <div class="fr" />
@@ -119,15 +119,23 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
+import { mapGetters, createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('user')
 export default {
   name: 'Dashboard',
+  data() {
+    return {
+      defaultimg: require('@/assets/common/img.jpeg')
+    }
+  },
   computed: {
     ...mapGetters([
-      'name'
-    ])
+      'name',
+      'staffPhoto'
+    ]),
+    ...mapState(['userInfo'])
   }
+
 }
 </script>
 
@@ -284,4 +292,5 @@ export default {
   .iconTechnology {
     background-position: -460px 0;
   }
-}</style>
+}
+</style>
