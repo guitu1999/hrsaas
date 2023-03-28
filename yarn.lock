@@ -11256,6 +11256,11 @@
   "resolved" "https://registry.npmmirror.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz"
   "version" "2.3.4"
 
+"vue-i18n@^8.22.2":
+  "integrity" "sha512-rb569fVJInPUgS/bbCxEQ9DrAoFTntuJvYoK4Fpk2VfNbA09WzdTKk57ppjz3S+ps9hW+p9H+2ASgMvojedkow=="
+  "resolved" "https://registry.npmmirror.com/vue-i18n/-/vue-i18n-8.22.2.tgz"
+  "version" "8.22.2"
+
 "vue-jest@^3.0.5":
   "integrity" "sha512-PIOxFM+wsBMry26ZpfBvUQ/DGH2hvp5khDQ1n51g3bN0TwFwTy4J85XVfxTRMukqHji/GnAoGUnlZ5Ao73K62w=="
   "resolved" "https://registry.npmmirror.com/vue-jest/-/vue-jest-3.0.7.tgz"

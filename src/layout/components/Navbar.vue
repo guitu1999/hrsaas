@@ -8,6 +8,8 @@
     <!-- <breadcrumb class="breadcrumb-container" /> -->
     <!-- 右侧菜单 -->
     <div class="right-menu">
+      <!-- 语言切换 -->
+      <LangSelect class="right-menu-item" />
       <!-- 放置全屏插件 -->
       <screen-full class="right-menu-item" />
       <!-- 切换主体组件 -->

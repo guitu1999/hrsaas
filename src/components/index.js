@@ -4,7 +4,7 @@ import ImageUpload from './ImageUpload' // 导入图片上传组件
 import Print from 'vue-print-nb' // 引入打印
 import ScreenFull from './ScreenFull' // 引入全屏
 import ThemePicker from './ThemePicker' // 引入颜色改变
-
+import LangSelect from './lang' // 多语言切换
 // 导出
 export default {
   install(Vue) {
@@ -13,6 +13,7 @@ export default {
     Vue.component('ImageUpload', ImageUpload)
     Vue.component('ScreenFull', ScreenFull)
     Vue.component('ThemePicker', ThemePicker)
+    Vue.component('LangSelect', LangSelect)
     Vue.use(Print)
   }
 }
